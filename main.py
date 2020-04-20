@@ -55,7 +55,7 @@ def parse(filename):
                         # A list of lists, that we will use to construct our matrix
                         tempList.append(t)
     # Create the matrix from our list of lists
-    matrix = np.matrix(tempList)
+    matrix = np.array(tempList)
     # Create our matrix object
     matrixObject = Matrix(numP, numR, units, matrix)
     return matrixObject
@@ -64,11 +64,10 @@ def main():
     # Un-commenting this line will allow the user to input a file upon runtime. 
     #filename = input("Enter the filename/path: ")
     # A hardcoded file destination, for ease of testing
-    filename = "C:/Users/DanielBatesJ/Desktop/UNT/Spring 2020/4600/Project2/Project-2-input-example.txt"
+    filename = "C:/Users/DanielBatesJ/Desktop/UNT/Spring 2020/4600/Project2/dead.txt"
     matrix = parse(filename)
     # I setup the class so that printing our object will print the matrix for ease of use
 
     # The print(f"") adapts python's print to act as a more C style print function. Using {} to place variables. 
     print(f"Testing the default print method of our object\n{matrix}")
-
 main()

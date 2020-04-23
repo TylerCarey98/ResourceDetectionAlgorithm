@@ -20,8 +20,50 @@ class Matrix:
 
     def findReducable(self):
         for x in range(0,self.numP):
+            sum = 0;
             for y in range(self.numP, self.numP+self.numR):
-                print(f"{x} {y}");
+                sum = sum+self.matrix[x][y];
+            if (sum == 0) :
+                return x;
+        return -1;
+
+    def releaseUsedBy(self, process):
+        for x in range(self.numP, self.numP+self.numR):
+            if (self.matrix[x][process] == 1):
+                print(f"process {process} was using resource {x-self.numP}");
+                self.matrix[x][process] = 0; #remove that allocation
+                #check if anyone wants that resource
+                for xx in range(0, self.numP):
+                    if (self.matrix[xx][x] == 1):
+                        print(f"process {xx} wants resource {x-self.numP}");
+                        self.matrix[xx][x] = 0; #remove request
+                        self.matrix[x][xx] = 1; #add allocation
+                        print(f"now process {xx} has resource {x-self.numP}");
+
+        print("Now deleting the process");
+        self.matrix = np.delete(self.matrix, process, 0);
+        self.matrix = np.delete(self.matrix, process, 1);
+        self.numP -= 1;
+
+    def isDeadlocked(self):
+        isReduced = 0;
+        isDead = 0;
+        while (isReduced == 0):
+            toRemove = self.findReducable();
+            if (toRemove != -1):
+                self.releaseUsedBy(toRemove);
+                print(self);
+                print(f"{self.numP} processes left!");
+                if(self.numP <= 0):
+                    isReduced = 1;
+            else:
+                print("Deadlocked");
+                isDead = 1;
+                break;
+        if (isDead == 1):
+            return -1;
+        else:
+            return 1;
 
 # This function parses the text file provided
 def parse(filename):
@@ -74,6 +116,10 @@ def main():
 
     # The print(f"") adapts python's print to act as a more C style print function. Using {} to place variables.
     print(matrix);
-    matrix.findReducable();
+    value = matrix.isDeadlocked();
+    if (value == -1):
+        print("This set of processes will deadlock :(");
+    else:
+        print("This set of processes will reduce! :D");
 
 main();
